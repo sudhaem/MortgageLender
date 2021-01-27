@@ -61,4 +61,16 @@ public class Lender {
     public double getPendingFunds() {
         return this.pendingFunds;
     }
+
+    public void processResponseForApprovedLoan(boolean decision, ApplicantLoanStatus applicantLoanStatus) {
+        if(decision){
+            this.pendingFunds-=applicantLoanStatus.getLoanAmount();
+            applicantLoanStatus.setStatus("accepted");
+        }else
+        {
+            this.availableFunds+=applicantLoanStatus.getLoanAmount();
+            this.pendingFunds-=applicantLoanStatus.getLoanAmount();
+            applicantLoanStatus.setStatus("rejected");
+        }
+    }
 }

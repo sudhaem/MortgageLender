@@ -4,6 +4,7 @@ public class Applicant {
     private int dti;
     private int score;
     private double savings;
+    private boolean decision;
 
     public Applicant(int dti, int score, double savings) {
         this.dti = dti;
@@ -29,4 +30,11 @@ public class Applicant {
     }
 
 
+    public boolean getDecision() {
+        return decision;
+    }
+
+    public void setDecision(boolean decision) {
+        this.decision = decision;
+    }
 }

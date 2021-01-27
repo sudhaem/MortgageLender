@@ -150,5 +150,52 @@ public class MortgageLenderTest {
 
     }
 
+    /**
+     * As a lender, I want to process response for approved loans, so that I can move forward with the loan.
+     *
+     * Given I have an approved loan
+     * When the applicant accepts my loan offer
+     * Then the loan amount is removed from the pending funds
+     * And the loan status is marked as accepted
+     *
+     * Given I have an approved loan
+     * When the applicant rejects my loan offer
+     * Then the loan amount is moved from the pending funds back to available funds
+     * And the loan status is marked as rejected
+     */
+
+    @Test
+    public void process_response_for_approved_loans(){
+        Lender lender = new Lender(125000);
+        assertEquals(125000, lender.getAvailableFunds());
+        Applicant applicant = new Applicant(21, 700,100000.00 );
+        //Applicant applies loan and lender qualifies loan
+        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+        ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
+        assertEquals("Approved", loanStatus.getStatus());
+        applicant.setDecision(true);
+        lender.processResponseForApprovedLoan(applicant.getDecision(),loanStatus);
+        assertEquals(0, lender.getPendingFunds());
+        assertEquals("accepted",loanStatus.getStatus());
+
+      /*rejected scenario*/
+        Lender lender2 = new Lender(125000);
+        assertEquals(125000, lender2.getAvailableFunds());
+        Applicant applicant2 = new Applicant(21, 700,100000.00 );
+        //Applicant applies loan and lender qualifies loan
+        ApplicantLoanStatus applicantLoanStatus2 = applicant.applyLoan(125000);
+        ApplicantLoanStatus loanStatus2 = lender2.processLoan(applicantLoanStatus2);
+        assertEquals("Approved", loanStatus2.getStatus());
+        applicant2.setDecision(false);
+        lender2.processResponseForApprovedLoan(applicant2.getDecision(),loanStatus2);
+        assertEquals(125000, lender2.getAvailableFunds());
+        assertEquals(0, lender2.getPendingFunds());
+        assertEquals("rejected",loanStatus2.getStatus());
+
+
+
+    }
+
+
 }
 
