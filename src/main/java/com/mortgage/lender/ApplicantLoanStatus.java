@@ -1,5 +1,7 @@
 package com.mortgage.lender;
 
+import java.text.SimpleDateFormat;
+
 public class ApplicantLoanStatus {
     private double loanAmount;
     private String status;
@@ -28,5 +30,9 @@ public class ApplicantLoanStatus {
 
     public void setQualification(String qualification) {
         this.qualification = qualification;
+    }
+
+    public void setDate(String s) {
+
     }
 }

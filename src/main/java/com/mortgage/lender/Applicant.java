@@ -24,9 +24,9 @@ public class Applicant {
         return savings;
     }
 
-    public ApplicantLoanStatus applyLoan(double requestedAmount) {
-        Loan loan = new Loan();
-       return loan.applyLoan(this,requestedAmount);
+    public Loan applyLoan(double requestedAmount) {
+        Loan loan = new Loan(requestedAmount, this);
+       return loan;
     }
 
 

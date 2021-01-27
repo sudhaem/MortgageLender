@@ -59,26 +59,34 @@ public class MortgageLenderTest {
     public void applicant_Loan_Qualification() {
 
         Applicant applicant = new Applicant(21, 700,100000.00 );
-        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(250000);
+
+       // ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(250000);
+        Loan loan = applicant.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus = lender.qualifyLoans(loan);
         //ApplicantLoanStatus applicantLoanStatus = lender.qualifyLoans(applicant, 250000);
         assertEquals("Qualified", applicantLoanStatus.getQualification());
         assertEquals(250000 , applicantLoanStatus.getLoanAmount());
         assertEquals("Qualified", applicantLoanStatus.getStatus());
 
         Applicant applicant2 = new Applicant(37, 700,100000.00 );
-        ApplicantLoanStatus applicantLoanStatus2 = applicant2.applyLoan(250000);
+        Loan loan2 = applicant2.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus2 = lender.qualifyLoans(loan2);
+       // ApplicantLoanStatus applicantLoanStatus2 = applicant2.applyLoan(250000);
         assertEquals("Not Qualified", applicantLoanStatus2.getQualification());
         assertEquals(0 , applicantLoanStatus2.getLoanAmount());
         assertEquals("Denied", applicantLoanStatus2.getStatus());
 
         Applicant applicant3 = new Applicant(30, 600,100000.00 );
-        ApplicantLoanStatus applicantLoanStatus3 = applicant3.applyLoan(250000);
+        Loan loan3 = applicant3.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus3 = lender.qualifyLoans(loan3);
+        //ApplicantLoanStatus applicantLoanStatus3 = applicant3.applyLoan(250000);
         assertEquals("Not Qualified", applicantLoanStatus3.getQualification());
         assertEquals(0 , applicantLoanStatus3.getLoanAmount());
         assertEquals("Denied", applicantLoanStatus3.getStatus());
 
         Applicant applicant4 = new Applicant(30, 700,50000.00 );
-        ApplicantLoanStatus applicantLoanStatus4 = applicant4.applyLoan(250000);
+        Loan loan4 = applicant4.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus4 = lender.qualifyLoans(loan4);
         assertEquals("Partially Qualified", applicantLoanStatus4.getQualification());
         assertEquals(200000 , applicantLoanStatus4.getLoanAmount());
         assertEquals("Qualified", applicantLoanStatus4.getStatus());
@@ -100,15 +108,19 @@ public class MortgageLenderTest {
         assertEquals(100000, lender.getAvailableFunds());
         Applicant applicant = new Applicant(21, 700,100000.00 );
         //Applicant applies loan and lender qualifies loan
-        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+       // ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+        Loan loan = applicant.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus = lender.qualifyLoans(loan);
         ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
         assertEquals("On Hold", loanStatus.getStatus());
 
-        Lender lender2 = new Lender(125000);
-        assertEquals(125000, lender2.getAvailableFunds());
+        Lender lender2 = new Lender(300000);
+        assertEquals(300000, lender2.getAvailableFunds());
         Applicant applicant2 = new Applicant(21, 700,100000.00 );
         //Applicant applies loan and lender qualifies loan
-        ApplicantLoanStatus applicantLoanStatus2 = applicant2.applyLoan(125000);
+        //ApplicantLoanStatus applicantLoanStatus2 = applicant2.applyLoan(125000);
+        Loan loan2 = applicant2.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus2 = lender2.qualifyLoans(loan2);
         ApplicantLoanStatus loanStatus2 = lender2.processLoan(applicantLoanStatus2);
         assertEquals("Approved", loanStatus2.getStatus());
 
@@ -116,7 +128,8 @@ public class MortgageLenderTest {
         assertEquals(125000, lender3.getAvailableFunds());
         Applicant applicant3 = new Applicant(39, 700,100000.00 );
         //Applicant applies loan and lender qualifies loan
-        ApplicantLoanStatus applicantLoanStatus3 = applicant3.applyLoan(125000);
+        Loan loan3 = applicant3.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus3 = lender3.qualifyLoans(loan3);
 
         RuntimeException exception = assertThrows(RuntimeException.class ,()->lender3.processLoan(applicantLoanStatus3));
         assertEquals("Do not proceed", exception.getMessage());
@@ -137,16 +150,18 @@ public class MortgageLenderTest {
 
     @Test
     public void move_PendingFunds(){
-        Lender lender = new Lender(125000);
-        assertEquals(125000, lender.getAvailableFunds());
+        Lender lender = new Lender(300000);
+        assertEquals(300000, lender.getAvailableFunds());
         Applicant applicant = new Applicant(21, 700,100000.00 );
         //Applicant applies loan and lender qualifies loan
-        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+        Loan loan = applicant.applyLoan(250000);
+        ApplicantLoanStatus applicantLoanStatus = lender.qualifyLoans(loan);
+        //ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
         ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
         assertEquals("Approved", loanStatus.getStatus());
 
-        assertEquals(0, lender.getAvailableFunds());
-        assertEquals(125000,lender.getPendingFunds());
+        assertEquals(50000.0, lender.getAvailableFunds());
+        assertEquals(250000.0,lender.getPendingFunds());
 
     }
 
@@ -170,7 +185,9 @@ public class MortgageLenderTest {
         assertEquals(125000, lender.getAvailableFunds());
         Applicant applicant = new Applicant(21, 700,100000.00 );
         //Applicant applies loan and lender qualifies loan
-        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+        Loan loan = applicant.applyLoan(125000);
+        ApplicantLoanStatus applicantLoanStatus = lender.qualifyLoans(loan);
+       // ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
         ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
         assertEquals("Approved", loanStatus.getStatus());
         applicant.setDecision(true);
@@ -183,7 +200,9 @@ public class MortgageLenderTest {
         assertEquals(125000, lender2.getAvailableFunds());
         Applicant applicant2 = new Applicant(21, 700,100000.00 );
         //Applicant applies loan and lender qualifies loan
-        ApplicantLoanStatus applicantLoanStatus2 = applicant.applyLoan(125000);
+        Loan loan2 = applicant2.applyLoan(125000);
+        ApplicantLoanStatus applicantLoanStatus2 = lender2.qualifyLoans(loan2);
+       // ApplicantLoanStatus applicantLoanStatus2 = applicant.applyLoan(125000);
         ApplicantLoanStatus loanStatus2 = lender2.processLoan(applicantLoanStatus2);
         assertEquals("Approved", loanStatus2.getStatus());
         applicant2.setDecision(false);
@@ -192,9 +211,45 @@ public class MortgageLenderTest {
         assertEquals(0, lender2.getPendingFunds());
         assertEquals("rejected",loanStatus2.getStatus());
 
-
-
     }
+//
+////    /**
+////     * As a lender, I want to filter loans by status, so that I can have an overview.
+////     *
+////     * Given there are loans in my system
+////     * When I search by loan status (qualified, denied, on hold, approved, accepted, rejected, expired)
+////     * Then I should see a list of loans and their details
+////     */
+////
+////    @Test
+////    public void filter_load_By_status(){
+////        Lender lender = new Lender(125000);
+////        assertEquals(125000, lender.getAvailableFunds());
+////        Applicant applicant = new Applicant(21, 700,100000.00 );
+////        //Applicant applies loan and lender qualifies loan
+////        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+////        ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
+////        assertEquals(2, lender.getLoans().size());
+////
+////    }
+//
+//    @Test
+//    public void expired_loans(){
+//        Lender lender = new Lender(125000);
+//        assertEquals(125000, lender.getAvailableFunds());
+//        Applicant applicant = new Applicant(21, 700,100000.00 );
+//        //Applicant applies loan and lender qualifies loan
+//        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+//        ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
+//        assertEquals("Approved", loanStatus.getStatus());
+//      //  loanStatus.setDate("");
+//      //  lender.checkExpiredLoans(loanStatus);
+//
+//
+//
+//    }
+
+
 
 
 }

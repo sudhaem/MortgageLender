@@ -1,8 +1,13 @@
 package com.mortgage.lender;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Lender {
     private double availableFunds;
     private double pendingFunds;
+    private Map<String, ApplicantLoanStatus> allLoans = new HashMap();
 
     public Lender(double availableFunds) {
         this.availableFunds = availableFunds;
@@ -16,17 +21,17 @@ public class Lender {
         this.availableFunds+= amount;
     }
 
-    public ApplicantLoanStatus qualifyLoans(Applicant applicant, double requestedAmount) {
+    public ApplicantLoanStatus qualifyLoans(Loan loan) {
         ApplicantLoanStatus applicantLoanStatus = new ApplicantLoanStatus();
-        if((applicant.getDti() < 36) &&(applicant.getScore() > 620)) {
-            if(applicant.getSavings() >= requestedAmount * 0.25) {
+        if((loan.getApplicant().getDti() < 36) &&(loan.getApplicant().getScore() > 620)) {
+            if(loan.getApplicant().getSavings() >= loan.getRequestedAmount() * 0.25) {
                 applicantLoanStatus.setStatus("Qualified");
-                applicantLoanStatus.setLoanAmount(requestedAmount);
+                applicantLoanStatus.setLoanAmount(loan.getRequestedAmount());
                 applicantLoanStatus.setQualification("Qualified");
             }
             else {
                 applicantLoanStatus.setStatus("Qualified");
-                applicantLoanStatus.setLoanAmount(applicant.getSavings() * 4);
+                applicantLoanStatus.setLoanAmount(loan.getApplicant().getSavings() * 4);
                 applicantLoanStatus.setQualification("Partially Qualified");
             }
         }
@@ -36,7 +41,7 @@ public class Lender {
             applicantLoanStatus.setQualification("Not Qualified");
         }
 
-
+        allLoans.put(applicantLoanStatus.getStatus(), applicantLoanStatus);
         return applicantLoanStatus;
     }
 
@@ -72,5 +77,12 @@ public class Lender {
             this.pendingFunds-=applicantLoanStatus.getLoanAmount();
             applicantLoanStatus.setStatus("rejected");
         }
+    }
+
+    public Map<String, ApplicantLoanStatus> getLoans() {
+        return allLoans;
+    }
+
+    public void checkExpiredLoans(ApplicantLoanStatus loanStatus) {
     }
 }
