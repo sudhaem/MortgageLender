@@ -38,4 +38,19 @@ public class Lender {
 
         return applicantLoanStatus;
     }
+
+    public ApplicantLoanStatus processLoan(ApplicantLoanStatus applicantLoanStatus) {
+        if(applicantLoanStatus.getStatus().equals("Qualified")) {
+            if(availableFunds < applicantLoanStatus.getLoanAmount()) {
+                applicantLoanStatus.setStatus("On Hold");
+            }
+            else {
+                applicantLoanStatus.setStatus("Approved");
+            }
+        }
+        else {
+            throw new RuntimeException("Do not proceed");
+        }
+        return applicantLoanStatus;
+    }
 }

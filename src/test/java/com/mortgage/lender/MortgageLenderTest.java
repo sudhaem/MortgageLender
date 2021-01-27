@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MortgageLenderTest {
     Lender lender;
@@ -56,7 +57,7 @@ public class MortgageLenderTest {
      */
     @Test
     public void applicant_Loan_Qualification() {
-        Loan loan = new Loan();
+
         Applicant applicant = new Applicant(21, 700,100000.00 );
         ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(250000);
         //ApplicantLoanStatus applicantLoanStatus = lender.qualifyLoans(applicant, 250000);
@@ -84,5 +85,45 @@ public class MortgageLenderTest {
 
 
     }
+    /**
+     * As a lender, I want to only approve loans when I have available funds, so that I don't go bankrupt.
+     *
+     * Given I have <available_funds> in available funds
+     * When I process a qualified loan
+     * Then the loan status is set to <status>
+     *     When I process a not qualified loan
+     * Then I should see a warning to not proceed
+     */
+    @Test
+    public void processLoan() {
+        Lender lender = new Lender(100000);
+        assertEquals(100000, lender.getAvailableFunds());
+        Applicant applicant = new Applicant(21, 700,100000.00 );
+        //Applicant applies loan and lender qualifies loan
+        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+        ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
+        assertEquals("On Hold", loanStatus.getStatus());
+
+        Lender lender2 = new Lender(125000);
+        assertEquals(125000, lender2.getAvailableFunds());
+        Applicant applicant2 = new Applicant(21, 700,100000.00 );
+        //Applicant applies loan and lender qualifies loan
+        ApplicantLoanStatus applicantLoanStatus2 = applicant2.applyLoan(125000);
+        ApplicantLoanStatus loanStatus2 = lender2.processLoan(applicantLoanStatus2);
+        assertEquals("Approved", loanStatus2.getStatus());
+
+        Lender lender3 = new Lender(125000);
+        assertEquals(125000, lender3.getAvailableFunds());
+        Applicant applicant3 = new Applicant(39, 700,100000.00 );
+        //Applicant applies loan and lender qualifies loan
+        ApplicantLoanStatus applicantLoanStatus3 = applicant3.applyLoan(125000);
+
+        RuntimeException exception = assertThrows(RuntimeException.class ,()->lender3.processLoan(applicantLoanStatus3));
+        assertEquals("Do not proceed", exception.getMessage());
+
+
+
+    }
+
 }
 
