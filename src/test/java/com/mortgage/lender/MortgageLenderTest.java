@@ -40,5 +40,49 @@ public class MortgageLenderTest {
       assertEquals(150.00, lender.getAvailableFunds());
 
     }
+
+    /**
+     * Rule: To qualify for the full amount, candidates must have debt-to-income (DTI) less than 36%, credit score above 620
+     * and savings worth 25% of requested loan amount.
+     *
+     * Rule: To partially qualify, candidates must still meet the same dti and credit score thresholds.
+     * The loan amount for partial qualified applications is four times the applicant's savings.
+     *
+     * Given a loan applicant with <dti>, <credit_score>, and <savings>
+     * When they apply for a loan with <requested_amount>
+     * Then their qualification is <qualification>
+     * And their loan amount is <loan_amount>
+     * And their loan status is <status>
+     */
+    @Test
+    public void applicant_Loan_Qualification() {
+        Loan loan = new Loan();
+        Applicant applicant = new Applicant(21, 700,100000.00 );
+        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(250000);
+        //ApplicantLoanStatus applicantLoanStatus = lender.qualifyLoans(applicant, 250000);
+        assertEquals("Qualified", applicantLoanStatus.getQualification());
+        assertEquals(250000 , applicantLoanStatus.getLoanAmount());
+        assertEquals("Qualified", applicantLoanStatus.getStatus());
+
+        Applicant applicant2 = new Applicant(37, 700,100000.00 );
+        ApplicantLoanStatus applicantLoanStatus2 = applicant2.applyLoan(250000);
+        assertEquals("Not Qualified", applicantLoanStatus2.getQualification());
+        assertEquals(0 , applicantLoanStatus2.getLoanAmount());
+        assertEquals("Denied", applicantLoanStatus2.getStatus());
+
+        Applicant applicant3 = new Applicant(30, 600,100000.00 );
+        ApplicantLoanStatus applicantLoanStatus3 = applicant3.applyLoan(250000);
+        assertEquals("Not Qualified", applicantLoanStatus3.getQualification());
+        assertEquals(0 , applicantLoanStatus3.getLoanAmount());
+        assertEquals("Denied", applicantLoanStatus3.getStatus());
+
+        Applicant applicant4 = new Applicant(30, 700,50000.00 );
+        ApplicantLoanStatus applicantLoanStatus4 = applicant4.applyLoan(250000);
+        assertEquals("Partially Qualified", applicantLoanStatus4.getQualification());
+        assertEquals(200000 , applicantLoanStatus4.getLoanAmount());
+        assertEquals("Qualified", applicantLoanStatus4.getStatus());
+
+
+    }
 }
 
