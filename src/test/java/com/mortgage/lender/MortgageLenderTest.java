@@ -125,5 +125,30 @@ public class MortgageLenderTest {
 
     }
 
+
+    /**
+     * As a lender, I want to keep pending loan amounts in a separate account,
+     * so I don't extend too many offers and bankrupt myself.
+     *
+     * Given I have approved a loan
+     * Then the requested loan amount is moved from available funds to pending funds
+     * And I see the available and pending funds reflect the changes accordingly
+     */
+
+    @Test
+    public void move_PendingFunds(){
+        Lender lender = new Lender(125000);
+        assertEquals(125000, lender.getAvailableFunds());
+        Applicant applicant = new Applicant(21, 700,100000.00 );
+        //Applicant applies loan and lender qualifies loan
+        ApplicantLoanStatus applicantLoanStatus = applicant.applyLoan(125000);
+        ApplicantLoanStatus loanStatus = lender.processLoan(applicantLoanStatus);
+        assertEquals("Approved", loanStatus.getStatus());
+
+        assertEquals(0, lender.getAvailableFunds());
+        assertEquals(125000,lender.getPendingFunds());
+
+    }
+
 }
 

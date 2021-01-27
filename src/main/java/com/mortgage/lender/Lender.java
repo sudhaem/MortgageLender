@@ -2,6 +2,7 @@ package com.mortgage.lender;
 
 public class Lender {
     private double availableFunds;
+    private double pendingFunds;
 
     public Lender(double availableFunds) {
         this.availableFunds = availableFunds;
@@ -46,11 +47,18 @@ public class Lender {
             }
             else {
                 applicantLoanStatus.setStatus("Approved");
+                this.availableFunds -= applicantLoanStatus.getLoanAmount();
+                this.pendingFunds +=applicantLoanStatus.getLoanAmount();
+                
             }
         }
         else {
             throw new RuntimeException("Do not proceed");
         }
         return applicantLoanStatus;
+    }
+
+    public double getPendingFunds() {
+        return this.pendingFunds;
     }
 }
